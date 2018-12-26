@@ -1,0 +1,17 @@
+---
+app_user: jboss
+app_dir: /usr/share
+jboss: "{{app_dir}}/jboss-as"
+app_group: jbos
+super_user: root
+filesystem_type: ext4
+physical_disk: /dev/sdc1
+physical_disk_raw: /dev/sdc
+jboss_admin: jbossadmin
+jboss_admin_pwd: "Password123"
+jboss_repository_url: http://192.168.3.111/jboss-as-7.1.1.Final.zip   
+http_port: 8080
+https_port: 8443 
+add_user: jbosstest
+add_password: jbosstest123
+app_user_pwd: jbosstest123

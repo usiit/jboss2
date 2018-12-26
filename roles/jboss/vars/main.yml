@@ -1,0 +1,28 @@
+---
+# vars file for jboss
+jboss_staging: "{{app_dir}}/staging"
+deploy_scripts: "{{jboss}}/scripts"
+jboss_logs: "{{jboss}}/logs"
+jboss_tmp: "/opt"
+jboss_standalone_configuration: "{{jboss}}/standalone/configuration"
+jboss_standalone_deployments: "{{jboss}}/standalone/deployments"
+
+
+start_jboss_script: startServer.sh
+stop_stop_script: stopServer.sh
+
+jboss_directories:
+  - "{{jboss_staging}}"
+  - "{{deploy_scripts}}" 
+  - "{{jboss_logs}}"
+  - "{{jboss_standalone_configuration}}"
+  
+
+deploy_apps:
+  - deploy_warName:    "jboss-helloworld.war"
+    deploy_appname:    "HelloWorld"
+    deploy_appcontext: "test1"
+  - deploy_warName:    "ticket-monster.war"
+    deploy_appname:    "ticket-monster"
+    deploy_appcontext: "test2" 
+

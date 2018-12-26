@@ -1,0 +1,17 @@
+---
+- name: Configure jboss to run as a service
+  copy:
+    src: jboss-as-standalone.sh # should be staged on vsts
+    dest: /etc/init.d/jbossVSS
+    mode: 0755
+    
+- name: Workaround for Systemd bug
+  shell: service jbossVSS start &&
+  shell: chkconfig jbossVSS on
+  ignore_errors: yes
+ 
+- name: Enable Jboss to be started at boot
+  service:
+    name: jboss
+    enabled: yes
+    state: started

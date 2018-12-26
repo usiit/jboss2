@@ -1,0 +1,21 @@
+---
+# tasks file for WebSphere
+
+- include_tasks: jboss_prep.yml
+  when: jboss_prep | default(False) == True
+  
+- include_tasks: install_jboss.yml
+  when: install_jboss | default(False) == True
+    
+- include_tasks: deploy_app.yml
+  when: deploy_app | default(False) == True  
+
+- include_tasks: start_app.yml
+  when: start_app | default(False) == True  
+
+- include_tasks: stop_app.yml
+  when: stop_app | default(False) == True  
+
+- include_tasks: uninstall_app.yml
+  when: uninstall_app | default(False) == True  
+

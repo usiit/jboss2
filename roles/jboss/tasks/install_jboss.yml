@@ -1,0 +1,88 @@
+---
+- name:      Is jboss running?
+  command:   "bash -c 'ps -ef'"
+  register:  jboss_running
+
+  
+- name: Download JBoss from jboss.org
+  get_url: 
+    url: "{{jboss_repository_url}}" 
+    dest:  "{{jboss_tmp}}/jboss-as-7.1.1.Final.zip"
+
+  
+- name: Extract JBOSS archive
+  unarchive:  
+    dest: "{{app_dir}}"    
+    src: "{{jboss_tmp}}/jboss-as-7.1.1.Final.zip"
+    creates: "{{jboss}}" 
+    copy: no 
+   
+- name: Rename install directory
+  command: chdir={{app_dir}} /bin/mv jboss-as-7.1.1.Final jboss-as creates={{jboss}}
+  
+- name: Copying JBOSS Modules file
+  copy: 
+    src: jboss-modules.jar    
+    dest: "{{jboss}}/" 
+    
+
+- name: Copying standalone.xml configuration file
+  template: 
+    src: standalone.xml 
+    dest: "{{jboss_standalone_configuration}}/"
+  notify: restart jboss
+  ignore_erros: true
+  
+- include_tasks: user.yml  
+
+- name: Copy the init script
+  copy: 
+    src: jboss-as-standalone.sh 
+    dest: /etc/init.d/jboss 
+    mode: 0755
+    
+- name: Workaround for systemd bug
+  shell: service jboss start && chkconfig jboss on
+  ignore_errors: yes
+
+- name: Enable JBoss to be started at boot
+  service: 
+    name: jboss 
+    enabled: yes 
+    state: started
+    
+- name: Execute the user add script
+  shell: "{{jboss}}/bin/add-user.sh --silent=true {{add_user}} {{add_password}}"
+  args:
+    executable: /bin/sh
+
+
+- name: deploy iptables rules
+  template: 
+    src: iptables-save 
+    dest: /etc/sysconfig/iptables
+  when: ansible_distribution_major_version != "7" 
+  notify: restart iptables
+
+- name: Ensure that firewalld is installed
+  yum: 
+    name: firewalld 
+    state: present
+  when: ansible_distribution_major_version == "7" 
+
+- name: Ensure that firewalld is started
+  service: 
+    name: firewalld 
+    state: started
+  when: ansible_distribution_major_version == "7" 
+
+- name: deploy firewalld rules
+  firewalld: 
+    immediate: yes 
+    port: "{{ item }}" 
+    state: enabled 
+    permanent: yes
+  when: ansible_distribution_major_version == "7"
+  with_items:
+    - "{{ http_port }}/tcp"
+    - "{{ https_port }}/tcp"        

@@ -1,0 +1,8 @@
+---
+- name: Copying Jboss Modules Jar file
+  copy:
+          remote_src: yes
+     src:     "{{ temp_dir.path }}/{{ vsts_git_path }}{{ item.deploy_warName }}"
+     dest:    "{{ deploy_scripts }}"
+  with_items: "{{ deploy_apps }}"
+  when: exists_deploy_scripts is defined and exists_deploy_scripts.stat.exists == true

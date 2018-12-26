@@ -1,0 +1,41 @@
+---
+           
+- name: Prepare Linux Machine with pre-requisites
+  hosts: jboss
+  
+  become: true
+  any_errors_fatal: True
+  roles: 
+    - jboss
+  vars: 
+    jboss_prep: True
+  tags: 
+    - install_jboss
+    - jboss_prep
+    - full_deployment
+    
+- name: Install JBOSS
+  hosts: jboss
+  
+  become: true
+  any_errors_fatal: True
+  roles: 
+    - jboss
+  vars: 
+    install_jboss: True
+  tags: 
+    - install_jboss
+    - full_deployment
+
+- name: Deploy jboss app
+  hosts: jboss
+  
+  become: true
+  any_errors_fatal: True
+  roles: 
+    - jboss
+  vars: 
+    deploy_app: True
+  tags: 
+    - deploy_app
+    - full_deployment

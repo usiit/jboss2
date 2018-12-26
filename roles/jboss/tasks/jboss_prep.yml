@@ -1,0 +1,16 @@
+---
+- name:          Install pre-requisites Java 1.8 and some basic dependencies
+  yum:           name={{item}} state=present
+  with_items:
+    - unzip
+    - tar
+    - java-1.7.0-openjdk
+    - libselinux-python
+    - libsemanage-python
+    - git
+  when: (ansible_distribution == "RedHat") or (ansible_distribution == "CentOS")
+
+#- name: Create Folders for JBOSS installation
+#  file: path={{ item }} owner={{app_user}} group={{app_group}} mode=0755 state=directory
+#  with_items: 
+#    - "{{jboss_directories}}"

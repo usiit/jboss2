@@ -1,0 +1,6 @@
+---
+- name: Adding Jboss Management Users
+  shell: {{ JBOSS_HOME }}/bin/add-user.sh --silent=true { { add_user }} {{ add_password }}
+  args:
+    executable: /bin/sh
+  
